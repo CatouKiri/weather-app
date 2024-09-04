@@ -1,23 +1,26 @@
 body {
     margin: 0px;
     padding: 0px;
+    background-color: rgb(249, 247, 247);
 }
 
 :root {
     --dpadding: 10px;
+    --dmargin: 30px;
 }
 
 header {
     width: 100vw;
-    padding: var(--dpadding);
-    background-color: red;
+    background-color: rgb(219, 226, 239);
     display: flex;
-    /* justify-content: center; */
+    justify-content: space-between;
     align-items: center;
+    padding: var(--dpadding) 0px;
 }
 
 #weather-logo {
     height: 100px;
+    margin-left: var(--dmargin);
 }
 
 #search{
@@ -28,11 +31,12 @@ header {
 button {
     height: 35px;
     width: 200px;
-    background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
+    /* background: none; */
+	/* color: inherit; */
+	/* border: none; */
+    margin-right: var(--dmargin);
 	font: inherit;
 	cursor: pointer;
 	outline: inherit;
+    text-align: center;
 }
