@@ -1,17 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="script.js" defer></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Reddit+Sans+Condensed:wght@200..900&display=swap" rel="stylesheet">
+  </head>
+  <body>
     <header>
-        <img src="weather-app.png" alt="weather app logo" id="weather-logo">
-        <div><input type="text" id="search" placeholder="Enter a city">
-        <button>Search</button></div>
+      <img src="weather-app.png" alt="weather app logo" id="weather-logo" />
+      <div>
+        <input type="text" id="search" placeholder="Enter a city" />
+        <button id="search-btn">Search</button>
+      </div>
     </header>
-</body>
+    <main>
+      <div id="main-1">
+        <div>
+          <div id="temperature-div">
+            <img id="weather-png" src="weather-app.png" alt="" />
+            <h1 id="temperature-data">34</h1>
+            <button id="temperature-scale">
+              <span>°C</span>
+              /
+              <span>°F</span>
+            </button>
+          </div>
+          <div id="phw-data-div">
+            <p id="precipitation-data">precipitation: 80%</p>
+            <p id="humidity-data">humidity: 70%</p>
+            <p id="wind-data">wind: 100 mph</p>
+          </div>
+        </div>
+        <div id="weather-details">
+          <h3>Weather</h3>
+          <p>Sunday 10:00 PM</p>
+          <p>End of the world weather</p>
+        </div>
+      </div>
+      <div id="daily-forecast-div"></div>
+    </main>
+  </body>
 </html>

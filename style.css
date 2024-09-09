@@ -1,7 +1,18 @@
-body {
+* {
     margin: 0px;
     padding: 0px;
+}
+
+/* .reddit-sans-condensed {
+  font-family: "Reddit Sans Condensed", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+} */
+
+body {
     background-color: rgb(249, 247, 247);
+    font-family: "Reddit Sans Condensed", sans-serif;
 }
 
 :root {
@@ -28,7 +39,7 @@ header {
     width: 500px;
 }
 
-button {
+#search-btn {
     height: 35px;
     width: 200px;
     /* background: none; */
@@ -39,4 +50,61 @@ button {
 	cursor: pointer;
 	outline: inherit;
     text-align: center;
+}
+
+#main-1 {
+    width: 100vw;
+    display: flex;
+    justify-content: space-around;
+}
+
+#main-1 div{
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+#temperature-data {
+    margin-left: 10px;
+    font-size: 8rem;
+    font-weight: 600;
+}
+
+#weather-png {
+    height: 10rem;
+}
+
+#phw-data-div {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    margin-left: 20px;
+    padding-top: 25px;
+    font-size: 1.4rem;
+}
+
+#temperature-scale {
+    margin-top: 35px;
+    font-size: 1rem;
+    padding: 3px;
+    padding-right: 6px;
+    padding-top: 6px;
+    font-weight: 900;
+}
+
+#weather-details {
+    display: flex;
+    flex-direction: column;
+    padding-top: 35px;
+}
+
+#weather-details h3,
+#weather-details p {
+    width: 100%;
+    text-align: right;
+    font-size: 1.5rem;
+}
+
+#weather-details h3 {
+    font-size: 1.8rem;
 }
