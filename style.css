@@ -126,13 +126,13 @@ td {
     margin-top: 80px;
 }
 
-#daily-forecast-div {
+#hourly-forecast-div {
     width: 80%;
     display: flex;
     justify-content: space-evenly;
 }
 
-#daily-forcast-weather-png {
+#hourly-forecast-weather-png {
     height: 4rem;
     display: block;
     margin-left: auto;
@@ -162,3 +162,10 @@ main {
     padding: 10px
 }
 
+
+#daily-forecast-weather-png {
+    height: 4rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
