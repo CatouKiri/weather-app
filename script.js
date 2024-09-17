@@ -2,7 +2,6 @@ fetch(
   "https://api.openweathermap.org/data/2.5/forecast?q=Bacnotan&appid=d59fa811fcbc953f690244b81b9f8522"
 )
   .then(function (response) {
-    // console.log(response.json);
     return response.json();
   })
   .then(function (response) {
@@ -24,6 +23,7 @@ let hourlyWindHour = document.querySelectorAll("#hourly-wind-hour");
 let hourlyHumidityHour = document.querySelectorAll("#hourly-humidity-hour");
 let hourlyTimeHour = document.querySelectorAll("#hourly-time-hour");
 let dailyForeCastWeatherPng = document.querySelectorAll("#daily-forecast-weather-png");
+let dailyForeCastDay = document.querySelectorAll("#daily-forecast-day");
 
 function weatherApi(cityName) {
   temp = "kelvin";
@@ -45,19 +45,32 @@ function weatherApi(cityName) {
       dayAndTime.textContent = `${weekday[date.getDay()]} ${changeTimeFormat(response.list[0].dt_txt)}`;
       weatherClass.textContent = capitalizeFirstLetter(response.list[0].weather[0].description);
 
-      for(i = 0; i < 8; i++) {
+      for (i = 0; i < 8; i++) {
         hourlyForecastWeatherPng[i].src = `https://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`;
         hourlyTempHour[i].textContent = `temp: ${tempConverter(temp, response.list[i].main.temp)}°`;
         hourlyWindHour[i].textContent = `wind: ${speedConverter(speed, response.list[i].wind.speed)} km/h`;
         hourlyHumidityHour[i].textContent = `humidity: ${response.list[i].main.humidity}%`;
         hourlyTimeHour[i].textContent = `${changeTimeFormat(response.list[i].dt_txt)}`;
-        console.log(hourlyTimeHour[i]);
       }
 
-      for(i = 0; i < 7; i++) {
-        dailyForeCastWeatherPng;
+      let startIndex = weekday.indexOf(weekday[date.getDay()]);
+      let length = (weekday.length)-1;
+      for (let i = 0; i < length; i++) {
+        let currentIndex = (startIndex + i) % length;
+        dailyForeCastDay[i].textContent = weekday[currentIndex];
+      }
+
+      dailyForeCastWeatherPng[0].src = `https://openweathermap.org/img/wn/${response.list[0].weather[0].icon}@2x.png`;
+      let a = 1;
+      for (let i = 0; i < (response.list).length; i++){
+        const date = new Date(response.list[i].dt_txt)
+        if(date.getHours() === 0) {
+          dailyForeCastWeatherPng[a].src = `https://openweathermap.org/img/wn/${response.list[i].weather[0].icon}@2x.png`;
+          a++;
+        }
       }
     })
+
     .catch(function (err) {
       console.log(err);
     });
@@ -91,16 +104,11 @@ function speedConverter(fr, speed) {
 
 function changeTimeFormat(apiDate) {
   let date = new Date(apiDate);
-
   let hours = date.getHours();
-
-  // Check whether AM or PM
   let newformat = hours >= 12 ? 'PM' : 'AM';
 
-  // Find current hour in AM-PM Format
   hours = hours % 12;
 
-  // To display "0" as "12"
   hours = hours ? hours : 12;
 
   return `${hours}:00 ${newformat}`;
@@ -109,3 +117,4 @@ function changeTimeFormat(apiDate) {
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
