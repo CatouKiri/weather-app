@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sideways Scroll with Buttons</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .scrollable-content {
+      width: 3000px; /* Make the page wider for horizontal scrolling */
+      height: 100vh;
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
+    }
+
+    .scroll-buttons {
+      position: fixed;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+    }
+
+    .scroll-buttons button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scrollable-content">
+    <!-- Add your horizontally scrollable content here -->
+  </div>
+
+  <div class="scroll-buttons">
+    <button onclick="scrollLeft1()">Scroll Left</button>
+    <button onclick="scrollRight()">Scroll Right</button>
+  </div>
+
+  <script>
+    function scrollLeft1() {
+      window.scrollBy({
+        left: -300, // Scrolls left by 300px
+        behavior: 'smooth' // Smooth scrolling
+      });
+    }
+
+    function scrollRight() {
+      window.scrollBy({
+        left: 300, // Scrolls right by 300px
+        behavior: 'smooth' // Smooth scrolling
+      });
+    }
+  </script>
+
+</body>
+</html>

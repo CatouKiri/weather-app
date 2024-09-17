@@ -1,6 +1,7 @@
 * {
     margin: 0px;
     padding: 0px;
+    box-sizing: border-box;
 }
 
 /* .reddit-sans-condensed {
@@ -11,8 +12,9 @@
 } */
 
 body {
-    background-color: rgb(249, 247, 247);
+    background-color: rgb(24, 28, 20);
     font-family: "Reddit Sans Condensed", sans-serif;
+    color: white;
 }
 
 :root {
@@ -22,7 +24,7 @@ body {
 
 header {
     width: 100vw;
-    background-color: rgb(219, 226, 239);
+    background-color: rgb(60, 61, 55);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -108,3 +110,55 @@ header {
 #weather-details h3 {
     font-size: 1.8rem;
 }
+
+table, tr, td {
+    border:1px solid black;
+}
+
+td {
+    width: 130px;
+}
+
+#daily-forecast-container-div {
+    width: 100vw;
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 80px;
+}
+
+#daily-forecast-div {
+    width: 80%;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#daily-forcast-weather-png {
+    height: 4rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#daily-forecast-time {
+    text-align: center;
+    margin-top: 15px;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#day-buttons {
+    margin-top: 50px;
+    display: flex;
+    width: 60%;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+#day-buttons button {
+    padding: 10px
+}
+
