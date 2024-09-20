@@ -125,16 +125,6 @@ async function hourlyData(startIndex, response) {
 
 // TEMPERATURE CONVERTER
 function tempConverter(to, temp) {
-  // if (fr === "kelvin") {
-  //   console.log("to celcius fr kelvin");
-  //   return Math.ceil(temp - 273.15);
-  // } else if (fr === "celsius") {
-  //   console.log("to farenheit fr celcius");
-  //   return (9 / 5) * temp + 32;
-  // } else {
-  //   console.log("to celcius fr farenheit");
-  //   return ((temp - 32) * 5) / 9;
-  // }
   if (to === "celcius") {
     // FROM KELVIN TO CELCIUS
     return Math.ceil(temp - 273.15);
@@ -248,9 +238,13 @@ searchCity.addEventListener("keypress", function (event) {
 
 // SEARCH BUTTON HANDLER
 function changeTemperatureScale(response) {
+
   let listIndex = currentListIndex;
 
-  console.log(listIndex);
+  if(!listIndex) {
+    listIndex = 0;
+  }
+
   if(toTemp === "celcius") {
     toTemp = "farenheit";
     temperatureData.textContent = tempConverter(toTemp, response.list[0].main.temp);
