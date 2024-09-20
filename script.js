@@ -11,7 +11,6 @@
 //     console.log(err);
 //   });
 
-let cachedData = null;
 let weatherPng = document.getElementById("weather-png");
 let temperatureData = document.getElementById("temperature-data");
 let humidityData = document.getElementById("humidity-data");
@@ -33,25 +32,12 @@ let dailyForeCastButton = document.querySelectorAll("#daily-forecast-button");
 let cityDetails = document.getElementById("city-name");
 let searchCity = document.getElementById("search");
 let searchButton = document.getElementById("search-btn");
+let temperatureScale = document.getElementById("temperature-scale");
+let currentListIndex;
 
-// SEARCH BUTTON HANDLER
-searchButton.addEventListener("click", function () {
-  weatherApi(searchCity.value);
-});
-
-// SEARCH INPUT ENTER HANDLER
-searchCity.addEventListener("keypress", function (event) {
-  if (event.key === "Enter") {
-    let inputText = searchCity.value;
-    // Cancel the default action, if needed
-    event.preventDefault();
-    weatherApi(inputText);
-  }
-});
-
-// DISPLAY DATA
+// UPDATE DATA
 async function weatherApi(cityName) {
-  temp = "kelvin";
+  toTemp = "celcius";
   speed = "meter/sec";
   const weekday = [
     "Sunday",
@@ -77,7 +63,7 @@ async function weatherApi(cityName) {
 
       weatherPng.src = `https://openweathermap.org/img/wn/${response.list[0].weather[0].icon}@2x.png`;
       temperatureData.textContent = tempConverter(
-        temp,
+        toTemp,
         response.list[0].main.temp
       );
       humidityData.textContent = `humidity: ${response.list[0].main.humidity}%`;
@@ -93,7 +79,7 @@ async function weatherApi(cityName) {
         response.list[0].weather[0].description
       );
 
-      hourlyData(0, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
+      hourlyData(0, response);
 
       let startIndex = weekday.indexOf(weekday[date.getDay()]);
       let length = weekday.length - 1;
@@ -114,21 +100,47 @@ async function weatherApi(cityName) {
         }
       }
 
-      changeDailyWeather(response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
+      temperatureScale.onclick = () => {
+        changeTemperatureScale(response);
+      };
+
+      changeDailyWeather(response);
     })
     .catch(function (err) {
       console.log(err);
     });
 }
 
+// UPDATE HOURLY DATA
+async function hourlyData(startIndex, response) {
+  for (i = 0; i < 8; i++) {
+    hourlyForecastWeatherPng[i].src = `https://openweathermap.org/img/wn/${response.list[startIndex].weather[0].icon}@2x.png`;
+    hourlyTempHour[i].textContent = `temp: ${tempConverter(toTemp, response.list[startIndex].main.temp)}°`;
+    hourlyWindHour[i].textContent = `wind: ${speedConverter(speed, response.list[startIndex].wind.speed)} km/h`;
+    hourlyHumidityHour[i].textContent = `humidity: ${response.list[startIndex].main.humidity}%`;
+    hourlyTimeHour[i].textContent = `${changeTimeFormat(response.list[startIndex].dt_txt)}`;
+    startIndex++;
+  }
+}
+
 // TEMPERATURE CONVERTER
-function tempConverter(fr, temp) {
-  if (fr === "kelvin") {
+function tempConverter(to, temp) {
+  // if (fr === "kelvin") {
+  //   console.log("to celcius fr kelvin");
+  //   return Math.ceil(temp - 273.15);
+  // } else if (fr === "celsius") {
+  //   console.log("to farenheit fr celcius");
+  //   return (9 / 5) * temp + 32;
+  // } else {
+  //   console.log("to celcius fr farenheit");
+  //   return ((temp - 32) * 5) / 9;
+  // }
+  if (to === "celcius") {
+    // FROM KELVIN TO CELCIUS
     return Math.ceil(temp - 273.15);
-  } else if (fr === "celsius") {
-    return (9 / 5) * temp + 32;
   } else {
-    return ((temp - 32) * 5) / 9;
+    // FROM KELVIN TO FARENHEIT
+    return Math.ceil((temp - 273.15) * 1.8 + 32);
   }
 }
 
@@ -141,6 +153,23 @@ function speedConverter(fr, speed) {
   } else {
     return Math.ceil(speed * 1.60934);
   }
+}
+
+// DATE AND TIME FORAMTER
+function currentDateAndTime(timezone) {
+  const now = new Date();
+
+  // Convert offset from seconds to milliseconds and adjust the time
+  const adjustedTime = new Date(now.getTime() + timezone * 1000);
+
+  // Format the adjusted time
+  const optionsDate = { month: 'long', day: 'numeric', year: 'numeric' };
+  const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true };
+
+  const formattedDate = adjustedTime.toLocaleDateString('en-US', optionsDate);
+  const formattedTime = adjustedTime.toLocaleTimeString('en-US', optionsTime);
+
+  return `${formattedDate} ${formattedTime}`;
 }
 
 // CHANGE TIME FORMAT
@@ -162,7 +191,7 @@ function capitalizeFirstLetter(string) {
 }
 
 // DAILY BUTTON HANDLERS
-async function changeDailyWeather(response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour) {
+async function changeDailyWeather(response) {
 
   let start = 0;
 
@@ -177,55 +206,70 @@ async function changeDailyWeather(response, hourlyForecastWeatherPng, hourlyTemp
     if (i === 0 && start === 0) {
       let currentStart = start;
       dailyForeCastButton[i].addEventListener("click", async function () {
-        hourlyData(currentStart, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
+        hourlyData(currentStart, response);
+        currentListIndex = currentStart;
       });
       start = start + 8;
     } else if (i === 0) {
       dailyForeCastButton[i].addEventListener("click", async function () {
-        hourlyData(i, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
+        hourlyData(i, response);
+        currentListIndex = i;
       });
     } else if (i === dailyForeCastButton.length - 1) {
       dailyForeCastButton[i].addEventListener("click", async function () {
-        hourlyData(32, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
+        hourlyData(32, response);
+        currentListIndex = 32;
       });
     } else {
       let currentStart = start;
       dailyForeCastButton[i].addEventListener("click", async function () {
-        hourlyData(currentStart, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
+        hourlyData(currentStart, response);
+        currentListIndex = currentStart;
       });
       start = start + 8;
     }
   }
 }
 
-// UPDATE HOURLY DATA
-async function hourlyData(startIndex, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour) {
-  for (i = 0; i < 8; i++) {
-    hourlyForecastWeatherPng[i].src = `https://openweathermap.org/img/wn/${response.list[startIndex].weather[0].icon}@2x.png`;
-    hourlyTempHour[i].textContent = `temp: ${tempConverter(temp, response.list[startIndex].main.temp)}°`;
-    hourlyWindHour[i].textContent = `wind: ${speedConverter(speed, response.list[startIndex].wind.speed)} km/h`;
-    hourlyHumidityHour[i].textContent = `humidity: ${response.list[startIndex].main.humidity}%`;
-    hourlyTimeHour[i].textContent = `${changeTimeFormat(response.list[startIndex].dt_txt)}`;
-    startIndex++;
+// SEARCH BUTTON HANDLER
+searchButton.addEventListener("click", function () {
+  weatherApi(searchCity.value);
+});
+
+// SEARCH INPUT ENTER HANDLER
+searchCity.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    let inputText = searchCity.value;
+    // Cancel the default action, if needed
+    event.preventDefault();
+    weatherApi(inputText);
+  }
+});
+
+// SEARCH BUTTON HANDLER
+function changeTemperatureScale(response) {
+  let listIndex = currentListIndex;
+
+  console.log(listIndex);
+  if(toTemp === "celcius") {
+    toTemp = "farenheit";
+    temperatureData.textContent = tempConverter(toTemp, response.list[0].main.temp);
+
+    for (i = 0; i < 8; i++) {
+      hourlyTempHour[i].textContent = `temp: ${tempConverter(toTemp, response.list[listIndex].main.temp)}°`;
+      listIndex++;
+    }
+  }
+  else {
+    toTemp = "celcius";
+    temperatureData.textContent = tempConverter(toTemp, response.list[0].main.temp);
+
+    for (i = 0; i < 8; i++) {
+      hourlyTempHour[i].textContent = `temp: ${tempConverter(toTemp, response.list[listIndex].main.temp)}°`;
+      listIndex++;
+    }
   }
 }
 
-// DATE AND TIME FORAMTER
-function currentDateAndTime(timezone) {
-  const now = new Date();
-
-  // Convert offset from seconds to milliseconds and adjust the time
-  const adjustedTime = new Date(now.getTime() + timezone * 1000);
-
-  // Format the adjusted time
-  const optionsDate = { month: 'long', day: 'numeric', year: 'numeric' };
-  const optionsTime = { hour: 'numeric', minute: 'numeric', hour12: true };
-
-  const formattedDate = adjustedTime.toLocaleDateString('en-US', optionsDate);
-  const formattedTime = adjustedTime.toLocaleTimeString('en-US', optionsTime);
-
-  return `${formattedDate} ${formattedTime}`;
-}
-
 // DEFAULT LOCATION
-weatherApi("Tokyo");
+weatherApi("Bacnotan");
