@@ -32,7 +32,24 @@ let dailyForeCastDay = document.querySelectorAll("#daily-forecast-day");
 let dailyForeCastButton = document.querySelectorAll("#daily-forecast-button");
 let cityDetails = document.getElementById("city-name");
 let searchCity = document.getElementById("search");
+let searchButton = document.getElementById("search-btn");
 
+// SEARCH BUTTON HANDLER
+searchButton.addEventListener("click", function () {
+  weatherApi(searchCity.value);
+});
+
+// SEARCH INPUT ENTER HANDLER
+searchCity.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    let inputText = searchCity.value;
+    // Cancel the default action, if needed
+    event.preventDefault();
+    weatherApi(inputText);
+  }
+});
+
+// DISPLAY DATA
 async function weatherApi(cityName) {
   temp = "kelvin";
   speed = "meter/sec";
@@ -52,9 +69,10 @@ async function weatherApi(cityName) {
       return response.json();
     })
     .then(function (response) {
-      console.log(response);
-      console.log(response.city.name);
-      console.log(currentDateAndTime(response.city.timezone));
+      if (response.cod === "404") {
+        alert(response.message);
+      }
+
       cityDetails.textContent = `${response.city.name} ${currentDateAndTime(response.city.timezone)}`;
 
       weatherPng.src = `https://openweathermap.org/img/wn/${response.list[0].weather[0].icon}@2x.png`;
@@ -75,7 +93,7 @@ async function weatherApi(cityName) {
         response.list[0].weather[0].description
       );
 
-      hourlyData(0, response,  hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
+      hourlyData(0, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour);
 
       let startIndex = weekday.indexOf(weekday[date.getDay()]);
       let length = weekday.length - 1;
@@ -102,7 +120,6 @@ async function weatherApi(cityName) {
       console.log(err);
     });
 }
-
 
 // TEMPERATURE CONVERTER
 function tempConverter(fr, temp) {
@@ -144,13 +161,13 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// BUTTON HANDLERS
+// DAILY BUTTON HANDLERS
 async function changeDailyWeather(response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour) {
 
   let start = 0;
 
-  for(let i = 0; i < response.list.length; i++){
-    if((changeTimeFormat(response.list[i].dt_txt)) === "12:00 AM") {
+  for (let i = 0; i < response.list.length; i++) {
+    if ((changeTimeFormat(response.list[i].dt_txt)) === "12:00 AM") {
       start = i;
       break;
     }
@@ -185,7 +202,7 @@ async function changeDailyWeather(response, hourlyForecastWeatherPng, hourlyTemp
 async function hourlyData(startIndex, response, hourlyForecastWeatherPng, hourlyTempHour, hourlyWindHour, hourlyHumidityHour, hourlyTimeHour) {
   for (i = 0; i < 8; i++) {
     hourlyForecastWeatherPng[i].src = `https://openweathermap.org/img/wn/${response.list[startIndex].weather[0].icon}@2x.png`;
-    hourlyTempHour[i].textContent = `temp: ${tempConverter(temp,response.list[startIndex].main.temp)}°`;
+    hourlyTempHour[i].textContent = `temp: ${tempConverter(temp, response.list[startIndex].main.temp)}°`;
     hourlyWindHour[i].textContent = `wind: ${speedConverter(speed, response.list[startIndex].wind.speed)} km/h`;
     hourlyHumidityHour[i].textContent = `humidity: ${response.list[startIndex].main.humidity}%`;
     hourlyTimeHour[i].textContent = `${changeTimeFormat(response.list[startIndex].dt_txt)}`;
