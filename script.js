@@ -34,11 +34,11 @@ let searchCity = document.getElementById("search");
 let searchButton = document.getElementById("search-btn");
 let temperatureScale = document.getElementById("temperature-scale");
 let currentListIndex;
+let toTemp = "celcius";
+let toSpeed = "kmph";
 
 // UPDATE DATA
 async function weatherApi(cityName) {
-  toTemp = "celcius";
-  speed = "meter/sec";
   const weekday = [
     "Sunday",
     "Monday",
@@ -68,7 +68,7 @@ async function weatherApi(cityName) {
       );
       humidityData.textContent = `humidity: ${response.list[0].main.humidity}%`;
       windData.textContent = `wind: ${speedConverter(
-        speed,
+        toSpeed,
         response.list[0].wind.speed
       )} km/h`;
       const date = new Date(response.list[0].dt_txt);
@@ -116,7 +116,7 @@ async function hourlyData(startIndex, response) {
   for (i = 0; i < 8; i++) {
     hourlyForecastWeatherPng[i].src = `https://openweathermap.org/img/wn/${response.list[startIndex].weather[0].icon}@2x.png`;
     hourlyTempHour[i].textContent = `temp: ${tempConverter(toTemp, response.list[startIndex].main.temp)}°`;
-    hourlyWindHour[i].textContent = `wind: ${speedConverter(speed, response.list[startIndex].wind.speed)} km/h`;
+    hourlyWindHour[i].textContent = `wind: ${speedConverter(toSpeed, response.list[startIndex].wind.speed)} km/h`;
     hourlyHumidityHour[i].textContent = `humidity: ${response.list[startIndex].main.humidity}%`;
     hourlyTimeHour[i].textContent = `${changeTimeFormat(response.list[startIndex].dt_txt)}`;
     startIndex++;
@@ -135,13 +135,13 @@ function tempConverter(to, temp) {
 }
 
 // SPEED CONVERTER
-function speedConverter(fr, speed) {
-  if (fr === "meter/sec") {
+function speedConverter(to, speed) {
+  if (to === "kmph") {
+    // FROM METERS PER SECOND TO KMPH
     return Math.ceil((speed * 3600) / 1000);
-  } else if (fr === "km/hr") {
-    return Math.ceil(speed * 0.62);
   } else {
-    return Math.ceil(speed * 1.60934);
+    // FROM METERS PER SECOND TO MPH
+    return Math.ceil(speed * 2.23694);
   }
 }
 
@@ -247,19 +247,25 @@ function changeTemperatureScale(response) {
 
   if(toTemp === "celcius") {
     toTemp = "farenheit";
+    toSpeed = "mph";
     temperatureData.textContent = tempConverter(toTemp, response.list[0].main.temp);
+    windData.textContent = `wind: ${speedConverter(toSpeed, response.list[0].wind.speed)} mph`;
 
     for (i = 0; i < 8; i++) {
       hourlyTempHour[i].textContent = `temp: ${tempConverter(toTemp, response.list[listIndex].main.temp)}°`;
+      hourlyWindHour[i].textContent = `wind: ${speedConverter(toSpeed, response.list[listIndex].wind.speed)} mph`;
       listIndex++;
     }
   }
   else {
     toTemp = "celcius";
+    toSpeed = "kmph";
     temperatureData.textContent = tempConverter(toTemp, response.list[0].main.temp);
+    windData.textContent = `wind: ${speedConverter(toSpeed, response.list[0].wind.speed)} km/h`;
 
     for (i = 0; i < 8; i++) {
       hourlyTempHour[i].textContent = `temp: ${tempConverter(toTemp, response.list[listIndex].main.temp)}°`;
+      hourlyWindHour[i].textContent = `wind: ${speedConverter(toSpeed, response.list[listIndex].wind.speed)} kmph`;
       listIndex++;
     }
   }
