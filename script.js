@@ -33,6 +33,8 @@ let cityDetails = document.getElementById("city-name");
 let searchCity = document.getElementById("search");
 let searchButton = document.getElementById("search-btn");
 let temperatureScale = document.getElementById("temperature-scale");
+let cScale = document.getElementById("c-scale");
+let fScale = document.getElementById("f-scale");
 let currentListIndex;
 let toTemp = "celcius";
 let toSpeed = "kmph";
@@ -59,6 +61,8 @@ async function weatherApi(cityName) {
         alert(response.message);
       }
 
+      console.log(response);
+
       cityDetails.textContent = `${response.city.name} ${currentDateAndTime(response.city.timezone)}`;
 
       weatherPng.src = `https://openweathermap.org/img/wn/${response.list[0].weather[0].icon}@2x.png`;
@@ -82,9 +86,8 @@ async function weatherApi(cityName) {
       hourlyData(0, response);
 
       let startIndex = weekday.indexOf(weekday[date.getDay()]);
-      let length = weekday.length - 1;
-      for (let i = 0; i < length; i++) {
-        let currentIndex = (startIndex + i) % length;
+      for (let i = 0; i < (weekday.length - 1); i++) {
+        let currentIndex = (startIndex + i) % weekday.length;
         dailyForeCastDay[i].textContent = weekday[currentIndex];
       }
 
@@ -256,6 +259,10 @@ function changeTemperatureScale(response) {
       hourlyWindHour[i].textContent = `wind: ${speedConverter(toSpeed, response.list[listIndex].wind.speed)} mph`;
       listIndex++;
     }
+
+  cScale.style.color = "rgb(179, 179, 179)";
+  fScale.style.color = "black";
+
   }
   else {
     toTemp = "celcius";
@@ -265,10 +272,16 @@ function changeTemperatureScale(response) {
 
     for (i = 0; i < 8; i++) {
       hourlyTempHour[i].textContent = `temp: ${tempConverter(toTemp, response.list[listIndex].main.temp)}°`;
-      hourlyWindHour[i].textContent = `wind: ${speedConverter(toSpeed, response.list[listIndex].wind.speed)} kmph`;
+      hourlyWindHour[i].textContent = `wind: ${speedConverter(toSpeed, response.list[listIndex].wind.speed)} km/h`;
       listIndex++;
     }
+
+  fScale.style.color = "rgb(179, 179, 179)";
+  cScale.style.color = "black";
+
   }
+
+
 }
 
 // DEFAULT LOCATION
